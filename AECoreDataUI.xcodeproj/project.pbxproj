@@ -185,6 +185,7 @@
 				TargetAttributes = {
 					8BFD96E11CF073F8008E8C9E = {
 						CreatedOnToolsVersion = 7.3.1;
+						LastSwiftMigration = 0800;
 					};
 					8BFD96EB1CF073F8008E8C9E = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -361,6 +362,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -379,6 +381,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = net.tadija.AECoreDataUI;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};
@@ -421,6 +424,7 @@
 				8BFD96F81CF073F8008E8C9E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		8BFD96F91CF073F8008E8C9E /* Build configuration list for PBXNativeTarget "AECoreDataUITests" */ = {
 			isa = XCConfigurationList;
@@ -429,6 +433,7 @@
 				8BFD96FB1CF073F8008E8C9E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

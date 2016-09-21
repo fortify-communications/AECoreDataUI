@@ -41,10 +41,10 @@ import UIKit
     If you want new fetch parameters (predicate, sorting, etc.),
     create a **NEW** `NSFetchedResultsController` and set this class's `fetchedResultsController` property again.
 */
-public class CoreDataTableViewController: UITableViewController, NSFetchedResultsControllerDelegate {
+open class CoreDataTableViewController: UITableViewController, NSFetchedResultsControllerDelegate {
     
     /// The controller *(this class fetches nothing if this is not set)*.
-    public var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>? {
+    open var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>? {
         didSet {
             if let frc = fetchedResultsController {
                 if frc != oldValue {
@@ -69,7 +69,7 @@ public class CoreDataTableViewController: UITableViewController, NSFetchedResult
         since the `NSFetchedResultsController` will notice and update the table automatically).
         This will also automatically be called if you change the `fetchedResultsController` property.
     */
-    public func performFetch() throws {
+    open func performFetch() throws {
         if let frc = fetchedResultsController {
             defer {
                 tableView.reloadData()
@@ -82,7 +82,7 @@ public class CoreDataTableViewController: UITableViewController, NSFetchedResult
         }
     }
     
-    private var _suspendAutomaticTrackingOfChangesInManagedObjectContext: Bool = false
+    fileprivate var _suspendAutomaticTrackingOfChangesInManagedObjectContext: Bool = false
     /**
         Turn this on before making any changes in the managed object context that
         are a one-for-one result of the user manipulating rows directly in the table view.
@@ -98,7 +98,7 @@ public class CoreDataTableViewController: UITableViewController, NSFetchedResult
         It is not necessary (in fact, not desirable) to set this during row deletion or insertion
         (but definitely for row moves).
     */
-    public var suspendAutomaticTrackingOfChangesInManagedObjectContext: Bool {
+    open var suspendAutomaticTrackingOfChangesInManagedObjectContext: Bool {
         get {
             return _suspendAutomaticTrackingOfChangesInManagedObjectContext
         }
@@ -114,7 +114,7 @@ public class CoreDataTableViewController: UITableViewController, NSFetchedResult
             }
         }
     }
-    private var beganUpdates: Bool = false
+    fileprivate var beganUpdates: Bool = false
     
     // MARK: NSFetchedResultsControllerDelegate
     
@@ -123,7 +123,7 @@ public class CoreDataTableViewController: UITableViewController, NSFetchedResult
         
         :param: controller The fetched results controller that sent the message.
     */
-    public func controllerWillChangeContent(controller: NSFetchedResultsController<NSFetchRequestResult>) {
+    open func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         if !suspendAutomaticTrackingOfChangesInManagedObjectContext {
             tableView.beginUpdates()
             beganUpdates = true
@@ -138,13 +138,13 @@ public class CoreDataTableViewController: UITableViewController, NSFetchedResult
         :param: sectionIndex The index of the changed section.
         :param: type The type of change (insert or delete).
     */
-    public func controller(controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
+    open func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
         if !suspendAutomaticTrackingOfChangesInManagedObjectContext {
             switch type {
             case .insert:
-                tableView.insertSections(NSIndexSet(index: sectionIndex) as IndexSet, with: .fade)
+                tableView.insertSections(IndexSet.init(integer: sectionIndex) as IndexSet, with: .fade)
             case .delete:
-                tableView.deleteSections(NSIndexSet(index: sectionIndex) as IndexSet, with: .fade)
+                tableView.deleteSections(IndexSet.init(integer: sectionIndex) as IndexSet, with: .fade)
             default:
                 return
             }
@@ -160,7 +160,7 @@ public class CoreDataTableViewController: UITableViewController, NSFetchedResult
         :param: type The type of change.
         :param: newIndexPath The destination path for the object for insertions or moves (this value is nil for a deletion).
     */
-    public func controller(controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+    open func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         if !suspendAutomaticTrackingOfChangesInManagedObjectContext {
             switch type {
             case .insert:
@@ -183,7 +183,7 @@ public class CoreDataTableViewController: UITableViewController, NSFetchedResult
         
         :param: controller The fetched results controller that sent the message.
     */
-    public func controllerDidChangeContent(controller: NSFetchedResultsController<NSFetchRequestResult>) {
+    open func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         if beganUpdates {
             tableView.endUpdates()
         }
@@ -198,7 +198,7 @@ public class CoreDataTableViewController: UITableViewController, NSFetchedResult
         
         :returns: The number of sections in tableView.
     */
-    public override func numberOfSections(in tableView: UITableView) -> Int
+    open override func numberOfSections(in tableView: UITableView) -> Int
     {
         return fetchedResultsController?.sections?.count ?? 0
     }
@@ -211,7 +211,7 @@ public class CoreDataTableViewController: UITableViewController, NSFetchedResult
         
         :returns: The number of rows in section.
     */
-    public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    open override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         let superNumberOfRows = super.tableView(tableView, numberOfRowsInSection: section)
         return (fetchedResultsController?.sections?[section])?.numberOfObjects ?? superNumberOfRows
     }
@@ -224,7 +224,7 @@ public class CoreDataTableViewController: UITableViewController, NSFetchedResult
         
         :returns: A string to use as the title of the section header.
     */
-    public override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    open override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         let superTitleForHeader = super.tableView(tableView, titleForHeaderInSection: section)
         return (fetchedResultsController?.sections?[section])?.name ?? superTitleForHeader
     }
@@ -238,7 +238,7 @@ public class CoreDataTableViewController: UITableViewController, NSFetchedResult
         
         :returns: An index number identifying a section.
     */
-    public override func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
+    open override func tableView(_ tableView: UITableView, sectionForSectionIndexTitle title: String, at index: Int) -> Int {
         return fetchedResultsController?.section(forSectionIndexTitle: title, at: index) ?? 0
     }
     
@@ -249,7 +249,7 @@ public class CoreDataTableViewController: UITableViewController, NSFetchedResult
         
         :returns: An array of strings that serve as the title of sections in the table view and appear in the index list on the right side of the table view.
     */
-    public override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
+    open override func sectionIndexTitles(for tableView: UITableView) -> [String]? {
         return fetchedResultsController?.sectionIndexTitles
     }
     
@@ -271,10 +271,10 @@ public class CoreDataTableViewController: UITableViewController, NSFetchedResult
     If you want new fetch parameters (predicate, sorting, etc.),
     create a **NEW** `NSFetchedResultsController` and set this class's `fetchedResultsController` property again.
 */
-public class CoreDataCollectionViewController: UICollectionViewController, NSFetchedResultsControllerDelegate {
+open class CoreDataCollectionViewController: UICollectionViewController, NSFetchedResultsControllerDelegate {
     
     /// The controller *(this class fetches nothing if this is not set)*.
-    public var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>? {
+    open var fetchedResultsController: NSFetchedResultsController<NSFetchRequestResult>? {
         didSet {
             if let frc = fetchedResultsController {
                 if frc != oldValue {
@@ -299,7 +299,7 @@ public class CoreDataCollectionViewController: UICollectionViewController, NSFet
         since the `NSFetchedResultsController` will notice and update the collection view automatically).
         This will also automatically be called if you change the `fetchedResultsController` property.
     */
-    public func performFetch() throws {
+    open func performFetch() throws {
         if let frc = fetchedResultsController {
             defer {
                 collectionView?.reloadData()
@@ -312,7 +312,7 @@ public class CoreDataCollectionViewController: UICollectionViewController, NSFet
         }
     }
     
-    private var _suspendAutomaticTrackingOfChangesInManagedObjectContext: Bool = false
+    fileprivate var _suspendAutomaticTrackingOfChangesInManagedObjectContext: Bool = false
     /**
         Turn this on before making any changes in the managed object context that
         are a one-for-one result of the user manipulating cells directly in the collection view.
@@ -328,7 +328,7 @@ public class CoreDataCollectionViewController: UICollectionViewController, NSFet
         It is not necessary (in fact, not desirable) to set this during row deletion or insertion
         (but definitely for cell moves).
     */
-    public var suspendAutomaticTrackingOfChangesInManagedObjectContext: Bool {
+    open var suspendAutomaticTrackingOfChangesInManagedObjectContext: Bool {
         get {
             return _suspendAutomaticTrackingOfChangesInManagedObjectContext
         }
@@ -347,33 +347,33 @@ public class CoreDataCollectionViewController: UICollectionViewController, NSFet
     
     // MARK: NSFetchedResultsControllerDelegate Helpers
     
-    private var sectionInserts = [Int]()
-    private var sectionDeletes = [Int]()
-    private var sectionUpdates = [Int]()
+    fileprivate var sectionInserts = [Int]()
+    fileprivate var sectionDeletes = [Int]()
+    fileprivate var sectionUpdates = [Int]()
     
-    private var objectInserts = [NSIndexPath]()
-    private var objectDeletes = [NSIndexPath]()
-    private var objectUpdates = [NSIndexPath]()
-    private var objectMoves = [NSIndexPath]()
-    private var objectReloads = Set<NSIndexPath>()
+    fileprivate var objectInserts = [IndexPath]()
+    fileprivate var objectDeletes = [IndexPath]()
+    fileprivate var objectUpdates = [IndexPath]()
+    fileprivate var objectMoves = [IndexPath]()
+    fileprivate var objectReloads = Set<IndexPath>()
     
-    private func updateSectionsAndObjects() {
+    fileprivate func updateSectionsAndObjects() {
         // sections
         if !self.sectionInserts.isEmpty {
             for sectionIndex in self.sectionInserts {
-                self.collectionView?.insertSections(NSIndexSet(index: sectionIndex) as IndexSet)
+                self.collectionView?.insertSections(IndexSet.init(integer: sectionIndex) as IndexSet)
             }
             self.sectionInserts.removeAll(keepingCapacity: true)
         }
         if !self.sectionDeletes.isEmpty {
             for sectionIndex in self.sectionDeletes {
-                self.collectionView?.deleteSections(NSIndexSet(index: sectionIndex) as IndexSet)
+                self.collectionView?.deleteSections(IndexSet.init(integer: sectionIndex) as IndexSet)
             }
             self.sectionDeletes.removeAll(keepingCapacity: true)
         }
         if !self.sectionUpdates.isEmpty {
             for sectionIndex in self.sectionUpdates {
-                self.collectionView?.reloadSections(NSIndexSet(index: sectionIndex) as IndexSet)
+                self.collectionView?.reloadSections(IndexSet.init(integer: sectionIndex) as IndexSet)
             }
             self.sectionUpdates.removeAll(keepingCapacity: true)
         }
@@ -412,7 +412,7 @@ public class CoreDataCollectionViewController: UICollectionViewController, NSFet
         :param: sectionIndex The index of the changed section.
         :param: type The type of change (insert or delete).
     */
-    public func controller(controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeSection sectionInfo: NSFetchedResultsSectionInfo, atIndex sectionIndex: Int, forChangeType type: NSFetchedResultsChangeType) {
+    open func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange sectionInfo: NSFetchedResultsSectionInfo, atSectionIndex sectionIndex: Int, for type: NSFetchedResultsChangeType) {
         switch type {
         case .insert:
             sectionInserts.append(sectionIndex)
@@ -434,7 +434,7 @@ public class CoreDataCollectionViewController: UICollectionViewController, NSFet
         :param: type The type of change.
         :param: newIndexPath The destination path for the object for insertions or moves (this value is nil for a deletion).
     */
-    public func controller(controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeObject anObject: AnyObject, atIndexPath indexPath: NSIndexPath?, forChangeType type: NSFetchedResultsChangeType, newIndexPath: NSIndexPath?) {
+    open func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         switch type {
         case .insert:
             objectInserts.append(newIndexPath!)
@@ -455,7 +455,7 @@ public class CoreDataCollectionViewController: UICollectionViewController, NSFet
         
         :param: controller The fetched results controller that sent the message.
     */
-    public func controllerDidChangeContent(controller: NSFetchedResultsController<NSFetchRequestResult>) {
+    open func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         if !suspendAutomaticTrackingOfChangesInManagedObjectContext {
             // do batch updates on collection view
             collectionView?.performBatchUpdates({ () -> Void in
@@ -482,7 +482,7 @@ public class CoreDataCollectionViewController: UICollectionViewController, NSFet
         
         :returns: The number of sections in collectionView.
     */
-    public override func numberOfSections(in collectionView: UICollectionView) -> Int {
+    open override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return fetchedResultsController?.sections?.count ?? 1
     }
     
@@ -494,7 +494,7 @@ public class CoreDataCollectionViewController: UICollectionViewController, NSFet
         
         :returns: The number of rows in section.
     */
-    public override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    open override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let superNumberOfItems = super.collectionView(collectionView, numberOfItemsInSection: section)
         return (fetchedResultsController?.sections?[section])?.numberOfObjects ?? superNumberOfItems
     }
